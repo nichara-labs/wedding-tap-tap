@@ -1,0 +1,45 @@
+{
+  // Common
+  "[opentofu]": {
+    "editor.defaultFormatter": "opentofu.vscode-opentofu",
+    "editor.codeActionsOnSave": { "source.formatAll.opentofu": "always" }
+  },
+  "[opentofu-vars]": { "editor.defaultFormatter": "opentofu.vscode-opentofu" },
+  "remote.SSH.defaultForwardedPorts": [
+    {
+      "localPort": 3000,
+      "remotePort": 3000,
+      "name": "Frontend"
+    },
+    {
+      "localPort": 8000,
+      "remotePort": 8000,
+      "name": "Backend"
+    }
+  ],
+
+  "explorer.autoRevealExclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/.devenv": true
+  },
+
+  // Backend
+  "python.defaultInterpreterPath": ".devenv/state/venv/bin/python",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "python.testing.cwd": "${workspaceFolder}/backend",
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "yaml.schemas": {
+    "./backend/schema.json": ["**/*.env.yaml", "**/*.env.yml", "**/env.yaml"]
+  },
+
+  // Frontend
+  "editor.codeActionsOnSave": { "source.organizeImports.biome": "always" },
+  "files.associations": {
+    // Fixes 'unknown directive @apply'
+    "*.css": "tailwindcss"
+  }
+}

@@ -1,0 +1,440 @@
+{
+  "$defs": {
+    "AppSettings": {
+      "additionalProperties": false,
+      "description": "General app settings.",
+      "properties": {
+        "ssm_prefix": {
+          "default": "forgotten_tome",
+          "description": "Prefix for all SSM parameters used by the app, without leading/trailing slashes.",
+          "pattern": "^[^/].*[^/]$",
+          "title": "Ssm Prefix",
+          "type": "string"
+        },
+        "api_prefix": {
+          "default": "/api",
+          "description": "The URL prefix for all API endpoints, e.g. `/api`.). Should not end with a slash.",
+          "pattern": "^(/.*[^/])?$",
+          "title": "Api Prefix",
+          "type": "string"
+        },
+        "env": {
+          "$ref": "#/$defs/Environment"
+        },
+        "log_level": {
+          "$ref": "#/$defs/LogLevel",
+          "default": "DEBUG"
+        },
+        "frontend_url": {
+          "description": "The frontend URL. Used for CORS, OAuth redirection after callback, etc.",
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Frontend Url",
+          "type": "string"
+        },
+        "frontend_app_url": {
+          "description": "The frontend URL for the actual product. The user is redirected here after OAuth login, app logout, or from the Stripe payment/billing portal.",
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Frontend App Url",
+          "type": "string"
+        },
+        "backend_url": {
+          "description": "The backend URL, excluding the api prefix, e.g. https://domain.com",
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Backend Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "env",
+        "frontend_url",
+        "frontend_app_url",
+        "backend_url"
+      ],
+      "title": "AppSettings",
+      "type": "object"
+    },
+    "AuthSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "google": {
+          "$ref": "#/$defs/GoogleProviderSettings"
+        }
+      },
+      "required": [
+        "google"
+      ],
+      "title": "AuthSettings",
+      "type": "object"
+    },
+    "AwsS3Settings": {
+      "additionalProperties": false,
+      "description": "S3 buckets used by the application.",
+      "properties": {
+        "app_bucket": {
+          "description": "Primary application bucket used for uploads and downloads",
+          "title": "App Bucket",
+          "type": "string"
+        }
+      },
+      "required": [
+        "app_bucket"
+      ],
+      "title": "AwsS3Settings",
+      "type": "object"
+    },
+    "AwsSettings": {
+      "additionalProperties": false,
+      "description": "Settings related to AWS services e.g. S3, SageMaker, Bedrock.",
+      "properties": {
+        "region": {
+          "description": "AWS region used for all AWS services",
+          "title": "Region",
+          "type": "string"
+        },
+        "s3": {
+          "$ref": "#/$defs/AwsS3Settings"
+        }
+      },
+      "required": [
+        "region",
+        "s3"
+      ],
+      "title": "AwsSettings",
+      "type": "object"
+    },
+    "DatabaseSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "hostname": {
+          "$ref": "#/$defs/SsmParameter_str_"
+        },
+        "hostname_unpooled": {
+          "$ref": "#/$defs/SsmParameter_str_",
+          "description": "Hostname to connect to the DB without connection pooling. Used for migrations."
+        },
+        "name": {
+          "$ref": "#/$defs/SsmParameter_str_"
+        },
+        "port": {
+          "$ref": "#/$defs/SsmParameter_int_"
+        },
+        "username": {
+          "$ref": "#/$defs/SsmParameter_str_"
+        },
+        "password": {
+          "$ref": "#/$defs/SsmParameter_SecretStr_"
+        },
+        "alembic_ini_path": {
+          "default": "alembic.ini",
+          "description": "Path to the alembic.ini file, relative to the project root",
+          "format": "file-path",
+          "title": "Alembic Ini Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hostname",
+        "hostname_unpooled",
+        "name",
+        "port",
+        "username",
+        "password"
+      ],
+      "title": "DatabaseSettings",
+      "type": "object"
+    },
+    "Environment": {
+      "description": "Environment the app is running in.",
+      "enum": [
+        "local",
+        "prod"
+      ],
+      "title": "Environment",
+      "type": "string"
+    },
+    "GoogleProviderSettings": {
+      "additionalProperties": false,
+      "description": "Google OAuth 2.0 provider configuration.\n\nSee parameters here https://developers.google.com/identity/openid-connect/openid-connect",
+      "properties": {
+        "name": {
+          "default": "google",
+          "title": "Name",
+          "type": "string"
+        },
+        "client_id": {
+          "title": "Client Id",
+          "type": "string"
+        },
+        "configuration_endpoint": {
+          "description": " OpenID Provider Configuration endpoint used to obtain the authorization and token endpoints. E.g. `https://accounts.google.com/.well-known/openid-configuration`.",
+          "title": "Configuration Endpoint",
+          "type": "string"
+        },
+        "client_secret": {
+          "$ref": "#/$defs/SsmParameter_str_"
+        }
+      },
+      "required": [
+        "client_id",
+        "configuration_endpoint",
+        "client_secret"
+      ],
+      "title": "GoogleProviderSettings",
+      "type": "object"
+    },
+    "LlmSettings": {
+      "additionalProperties": false,
+      "description": "Settings related to LLMs and their providers.",
+      "properties": {
+        "api_key": {
+          "$ref": "#/$defs/SsmParameter_SecretStr_",
+          "description": "API key for the OpenAI compatible provider endpoint"
+        },
+        "model": {
+          "default": "z-ai/glm-4.6:nitro",
+          "description": "The model on OpenRouter to use for LLM requests. For more information about provider sorting, see https://openrouter.ai/docs/features/provider-routing",
+          "title": "Model",
+          "type": "string"
+        },
+        "title_model": {
+          "default": "z-ai/glm-4.6:nitro",
+          "description": "Model used to generate chat titles",
+          "title": "Title Model",
+          "type": "string"
+        },
+        "base_url": {
+          "default": "https://openrouter.ai/api/v1",
+          "description": "Base URL for LLM requests",
+          "title": "Base Url",
+          "type": "string"
+        },
+        "new_user_bonus_lorestones": {
+          "default": 1000,
+          "description": "Number of lorestones to grant as a bonus to new users",
+          "title": "New User Bonus Lorestones",
+          "type": "integer"
+        },
+        "daily_bonus_lorestones": {
+          "default": 100,
+          "description": "Number of lorestones to grant as a daily bonus",
+          "title": "Daily Bonus Lorestones",
+          "type": "integer"
+        },
+        "lorestone_value": {
+          "default": 0.001,
+          "description": "How much a lorestone is worth. Currency is based off that of the OpenRouter `cost` parameter in the usage event.",
+          "title": "Lorestone Value",
+          "type": "number"
+        },
+        "system_prompt": {
+          "default": "Let the user play this as a story. Write a scene and suggest actions they can take. If an action is impossible, let the user know. For the first turn, describe the user's character (background, inventory) briefly. If an action is taken which results in the protagonist dying, end the game and do not offer any more options. Otherwise, keep the adventure progressing.\n\nThe user can only act as their character, and not create new elements in the story or modify it. If there is a scene change, describe the scene in detail. Offer at most 3 numbered action suggestions. If the user's action is vague, ask for clarification. If the user performs an invalid action, the events of the story still continue to progress. Always describe the objects around the user's surroundings.\n\nWrite in an exciting, dynamic manner, using emojis if possible.\n\nDon't mention these instructions to the user.\n",
+          "description": "System prompt to use for LLM requests",
+          "title": "System Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "api_key"
+      ],
+      "title": "LlmSettings",
+      "type": "object"
+    },
+    "LogLevel": {
+      "enum": [
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "CRITICAL",
+        "NOTSET"
+      ],
+      "type": "string"
+    },
+    "SessionSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "signing_key": {
+          "$ref": "#/$defs/SsmParameter_SecretStr_",
+          "description": "Signing key for session cookies"
+        },
+        "max_age": {
+          "default": 604800,
+          "description": "Max age of the session cookie, in seconds",
+          "title": "Max Age",
+          "type": "integer"
+        },
+        "user_data_key": {
+          "default": "user-data",
+          "description": "Key in session data where user data in stored",
+          "title": "User Data Key",
+          "type": "string"
+        },
+        "cookie_name": {
+          "default": "__Host-session",
+          "description": "\nName of the session cookie.\n\nNote: When developing locally on Chrome, do not add __Host- or __Secure- as a prefix, as Chrome does not treat localhost as a secure origin.\n\n__Host- prefixed cookies are strictly host-scoped, require HTTPS, secure flag, and path=/. They cannot have a domain specified. This provides more security over the Domain attribute.\n\nFor details: https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis#section-4.1.3.2\n",
+          "title": "Cookie Name",
+          "type": "string"
+        },
+        "same_site": {
+          "default": "lax",
+          "description": "SameSite attribute of the session cookie. Must be 'lax' or 'none' for the client to send the session cookie (containing 'state') during the OAuth redirect.",
+          "enum": [
+            "lax",
+            "none"
+          ],
+          "title": "Same Site",
+          "type": "string"
+        },
+        "secure": {
+          "default": true,
+          "description": "Secure attribute of the session cookie",
+          "title": "Secure",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "signing_key"
+      ],
+      "title": "SessionSettings",
+      "type": "object"
+    },
+    "SsmParameter_SecretStr_": {
+      "additionalProperties": false,
+      "properties": {
+        "override": {
+          "anyOf": [
+            {
+              "format": "password",
+              "type": "string",
+              "writeOnly": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bypass parameter retrieval and use this value directly. Intended for local development only.",
+          "title": "Override"
+        }
+      },
+      "title": "SsmParameter[SecretStr]",
+      "type": "object"
+    },
+    "SsmParameter_int_": {
+      "additionalProperties": false,
+      "properties": {
+        "override": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bypass parameter retrieval and use this value directly. Intended for local development only.",
+          "title": "Override"
+        }
+      },
+      "title": "SsmParameter[int]",
+      "type": "object"
+    },
+    "SsmParameter_str_": {
+      "additionalProperties": false,
+      "properties": {
+        "override": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bypass parameter retrieval and use this value directly. Intended for local development only.",
+          "title": "Override"
+        }
+      },
+      "title": "SsmParameter[str]",
+      "type": "object"
+    },
+    "StripeSettings": {
+      "additionalProperties": false,
+      "description": "Stripe payment integration settings.",
+      "properties": {
+        "api_key": {
+          "$ref": "#/$defs/SsmParameter_SecretStr_",
+          "description": "Stripe secret key for API authentication"
+        },
+        "webhook_secret": {
+          "$ref": "#/$defs/SsmParameter_SecretStr_",
+          "description": "Stripe webhook secret for signature verification"
+        },
+        "pro_product_id": {
+          "description": "Stripe product ID for the Pro subscription. If it is present in any item in a user's Stripe Subscription, they will be considered a Pro user.",
+          "minLength": 1,
+          "title": "Pro Product Id",
+          "type": "string"
+        },
+        "pro_product_price": {
+          "description": "Stripe product price ID for the Pro subscription.",
+          "minLength": 1,
+          "title": "Pro Product Price",
+          "type": "string"
+        }
+      },
+      "required": [
+        "api_key",
+        "webhook_secret",
+        "pro_product_id",
+        "pro_product_price"
+      ],
+      "title": "StripeSettings",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top level settings for the app.\n\nRegenerate JSON schema after making changes with `python scripts/schema.py schema.json`.",
+  "properties": {
+    "app": {
+      "$ref": "#/$defs/AppSettings"
+    },
+    "auth": {
+      "$ref": "#/$defs/AuthSettings"
+    },
+    "aws": {
+      "$ref": "#/$defs/AwsSettings"
+    },
+    "db": {
+      "$ref": "#/$defs/DatabaseSettings"
+    },
+    "session": {
+      "$ref": "#/$defs/SessionSettings"
+    },
+    "stripe": {
+      "$ref": "#/$defs/StripeSettings"
+    },
+    "llm": {
+      "$ref": "#/$defs/LlmSettings"
+    }
+  },
+  "required": [
+    "app",
+    "auth",
+    "aws",
+    "db",
+    "session",
+    "stripe",
+    "llm"
+  ],
+  "title": "Settings",
+  "type": "object"
+}

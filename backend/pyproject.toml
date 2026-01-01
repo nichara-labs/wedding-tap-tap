@@ -1,0 +1,54 @@
+[project]
+name = "app"
+version = "0.1.0"
+description = "Forgotten Tome Backend"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.115.6",
+    "pydantic>=2.10.3",
+    "pydantic-settings>=2.6.1",
+    "structlog>=24.4.0",
+    "httpx>=0.28.1",
+    "boto3>=1.35.90",
+    "orjson>=3.10.13",
+    "asgi-correlation-id>=4.3.4",
+    "asgiref>=3.8.1",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "sqlalchemy-utils>=0.41.2",
+    "tenacity>=9.0.0",
+    "schedule>=1.2.2",
+    "asyncpg>=0.30.0",
+    "brotli>=1.1.0",
+    "cachetools>=5.5.0",
+    "python-utils",
+    "alembic>=1.14.0",
+    "authlib>=1.4.0",
+    "itsdangerous>=2.2.0",
+    "pyjson5>=1.6.8",
+    "pyyaml>=6.0.2",
+    "stripe>=11.1.1",
+    "uuid6>=2025.0.1",
+    "openai>=1.107.2",
+    "email-validator>=2.2.0",
+    "psycopg[binary]>=3.2.11",
+]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.406",
+    "ipykernel>=6.29.5",
+    "pytest>=8.3.3",
+    "pytest-cov>=5.0.0",
+    "boto3-stubs[bedrock-runtime,cloudwatch,essential,secretsmanager,sts,ssm]>=1.35.90",
+    "pytest-env>=1.1.5",
+    "testcontainers>=4.9.1",
+    "moto[all]>=5.0.28",
+    "ruff>=0.14.2",
+]
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+python-utils = { git = "https://github.com/extrange/python-utils" }

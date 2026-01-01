@@ -1,0 +1,25 @@
+{
+  "recommendations": [
+    // Common
+    "timonwong.shellcheck",
+    "github.vscode-github-actions",
+    "docker.docker",
+    "exiasr.hadolint",
+    "hashicorp.hcl",
+    "opentofu.vscode-opentofu",
+    "mkhl.direnv",
+
+    // Backend
+    "ms-python.python",
+    // Note: to ensure the devenv ruff version is used, ensure ruff is not installed globally
+    "charliermarsh.ruff",
+    "ms-toolsai.jupyter",
+    "tamasfe.even-better-toml",
+    "inferrinizzard.prettier-sql-vscode",
+
+    // Frontend
+    "biomejs.biome",
+    "bradlc.vscode-tailwindcss"
+  ],
+  "unwantedRecommendations": []
+}

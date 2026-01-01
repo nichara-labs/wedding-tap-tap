@@ -1,0 +1,45 @@
+{
+  // excludes are handled by pre-commit
+  // it is unlikely that biome will need to be run via CLI
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "overrides": [
+    {
+      "includes": [".vscode/**"],
+      "json": {
+        "parser": {
+          "allowComments": true,
+          "allowTrailingCommas": true
+        }
+      }
+    }
+  ],
+  "linter": {
+    "includes": [
+      "**",
+      "!frontend/src/components/ui/**",
+      "!frontend/src/components/ai-elements/**"
+    ],
+    "rules": {
+      "correctness": {
+        "useUniqueElementIds": {
+          "options": {
+            "excludedComponents": ["section"]
+          }
+        }
+      }
+    }
+  }
+}

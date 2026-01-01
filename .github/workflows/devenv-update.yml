@@ -1,0 +1,12 @@
+name: "Update devenv and flake lockfile"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 17 * * 0"
+
+jobs:
+  devenv-update:
+    uses: extrange/actions/.github/workflows/devenv-update.yml@v1.6
+    permissions:
+      contents: write

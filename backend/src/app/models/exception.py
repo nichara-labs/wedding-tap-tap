@@ -1,0 +1,6 @@
+from pydantic import BaseModel
+
+
+class ErrorDetail(BaseModel):
+    detail: str
+    status_code: int

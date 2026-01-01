@@ -1,0 +1,60 @@
+#:schema https://www.schemastore.org/ruff.json
+
+# View options here https://docs.astral.sh/ruff/configuration/
+
+extend-exclude = ["migrations/versions/*.py"]
+target-version = "py314"
+
+[lint]
+
+# View rules here: https://docs.astral.sh/ruff/rules/
+select = ["ALL"]
+
+ignore = [
+    "D100",   # undocumented-public-module
+    "D101",
+    "D102",
+    "D107",   # Missing docstring in __init__
+    "D203",   # one-blank-line-before-class
+    "D205",   # blank-line-after-summary
+    "D211",   # blank-line-before-class
+    "D212",   # multi-line-summary-first-line
+    "D401",   # non-imperative-mood
+    "TD",     # flake8-todos
+    "FIX002", # Line contains TODO
+    "D104",   # Missing docstring in public package
+    "E501",   # line-too-long
+    "COM812", # missing-trailing-comma
+    "ISC001", # single-line-implicit-string-concatenation
+    "D202",
+    "ANN401",
+
+    # These exceptions are due to the introduction of postponed annotations in 3.14
+    # TC001-3: Pydantic/FastAPI require the types at runtime for validation
+    # Previously the breaking fixes were not suggested as the annotations were not quoted, however in 3.14, evaluation of annotions is deferred and so the suggestions appear as if they had been quoted.
+    # https://github.com/astral-sh/ruff/issues/14140
+    "TC001", # Move application import {} into a type-checking block
+    "TC002", # Move third-party import {} into a type-checking block
+    "TC003", # Move standard library import {} into a type-checking block
+    # Removing quotes from the "Mapped" class causes errors
+    # https://github.com/astral-sh/ruff/issues/21120
+    # Can be removed once SQLAlchemy is upgraded to 2.0.45
+    "UP037", # Remove quotes from type annotation
+]
+
+# https://docs.astral.sh/ruff/settings/#lint_pydocstyle_convention
+pydocstyle.convention = "pep257"
+
+# Don't enforce certain rules on test files
+[lint.per-file-ignores]
+"tests/**" = [
+    "D",       # Documentation related
+    "S101",    # Use of assert
+    "PLR2004", # Magic values
+    "PLR0913", # Too many arguments
+    "INP001",  # implicit-namespace-package
+    "S105",    # hardcoded-password-string
+    "SLF001",  # private member access
+    "F403",    # undefined-local-with-import-star
+    "F405",    # undefined-local-with-import-star-usage
+]
