@@ -44,10 +44,6 @@
     export TF_PLUGIN_CACHE_DIR=~/.tofu.d/plugin-cache
     mkdir -p "$TF_PLUGIN_CACHE_DIR"
 
-    if ! aws sts get-caller-identity >/dev/null 2>&1; then
-      aws sso login
-    fi
-
     if [[ -z "$GITHUB_ACTIONS" ]] && ! gh auth status >/dev/null 2>&1; then
       gh auth login
     fi
