@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Instruction from "../components/Instruction";
+import PowerBar from "../components/PowerBar";
+import TapButton from "../components/TapButton";
 
 const THRESHOLD = 10;
-const MAX_COUNT = THRESHOLD * 2; // for scaling color intensity
+const MAX_COUNT = THRESHOLD * 2;
 
-export default function MagicChestGame() {
+export default function MagicChestGamePage() {
   const [groomCount, setGroomCount] = useState(0);
   const [brideCount, setBrideCount] = useState(0);
   const [magicCast, setMagicCast] = useState(false);
@@ -18,9 +21,8 @@ export default function MagicChestGame() {
   const groomSoundRef = useRef<HTMLAudioElement>(null);
   const brideSoundRef = useRef<HTMLAudioElement>(null);
 
-  // ---------- tap handler ----------
   const handleTap = (type: "groom" | "bride") => {
-    if (magicCast) return; // block taps after magic
+    if (magicCast) return;
 
     if (!audioUnlocked) {
       setAudioUnlocked(true);
@@ -36,7 +38,6 @@ export default function MagicChestGame() {
     }
   };
 
-  // ---------- magic cast ----------
   useEffect(() => {
     if (
       !magicCast &&
@@ -48,7 +49,7 @@ export default function MagicChestGame() {
 
       // fade out bgm
       if (bgmRef.current) {
-        const fadeDuration = 2000; // 2 seconds
+        const fadeDuration = 2000;
         const fadeStep = 50;
         const initialVolume = bgmRef.current.volume;
         let elapsed = 0;
@@ -61,33 +62,16 @@ export default function MagicChestGame() {
           );
           if (!bgmRef.current) return;
           bgmRef.current.volume = newVolume;
-
           if (newVolume <= 0) clearInterval(fadeInterval);
         }, fadeStep);
       }
 
-      // play background video
       bgVideoRef.current?.play().catch(() => {});
-
-      // play magic sound
       magicAudioRef.current?.play().catch(() => {});
 
-      // final video after 10s
       setTimeout(() => setShowVideo(true), 10000);
     }
   }, [groomCount, brideCount, magicCast]);
-
-  // ---------- compute power bar color ----------
-  const getBarColor = (count: number, baseColor: string) => {
-    const ratio = Math.min(count / MAX_COUNT, 1);
-    if (baseColor === "purple") {
-      const value = Math.floor(200 - 120 * ratio); // 200 -> 80
-      return `rgb(${value}, 0, ${value + 55})`; // dark purple
-    } else {
-      const value = Math.floor(255 - 120 * ratio); // 255 -> 135
-      return `rgb(255, ${value}, ${value})`; // dark pink
-    }
-  };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-800 flex flex-col items-center justify-end text-white">
@@ -118,58 +102,21 @@ export default function MagicChestGame() {
 
       {/* center instruction */}
       {/* instruction */}
-      {!magicCast && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-white z-20">
-          Tap, match and open
-        </div>
-      )}
+      <Instruction visible={!magicCast} />
 
       {/* power bars */}
       {!magicCast && (
-        <>
-          <div className="absolute top-8 left-8 w-20 h-[80vh] bg-gray-700 rounded-3xl overflow-hidden shadow-inner flex flex-col justify-end items-center">
-            <div
-              className="w-full rounded-3xl transition-all duration-200 flex flex-col justify-end items-center text-white font-bold pb-2  text-3xl"
-              style={{
-                height: `${(groomCount / MAX_COUNT) * 100}%`,
-                backgroundColor: getBarColor(groomCount, "purple"),
-              }}
-            >
-              {groomCount}
-            </div>
-          </div>
-
-          <div className="absolute top-8 right-8 w-20 h-[80vh] bg-gray-700 rounded-3xl overflow-hidden shadow-inner flex flex-col justify-end items-center">
-            <div
-              className="w-full rounded-3xl transition-all duration-200 flex flex-col justify-end items-center text-white font-bold pb-2  text-3xl"
-              style={{
-                height: `${(brideCount / MAX_COUNT) * 100}%`,
-                backgroundColor: getBarColor(brideCount, "purple"),
-              }}
-            >
-              {brideCount}
-            </div>
-          </div>
-        </>
+        <div className="absolute top-8 left-0 right-0 flex justify-between px-8 z-20">
+          <PowerBar count={groomCount} baseColor="purple" label="Groom" />
+          <PowerBar count={brideCount} baseColor="purple" label="Bride" />
+        </div>
       )}
 
       {/* bottom buttons */}
       {!magicCast && (
         <div className="flex gap-6 w-full px-20 pb-20 z-20 relative">
-          <button
-            type="button" // <-- explicitly added
-            onClick={() => handleTap("groom")}
-            className="flex-1 py-8 text-2xl font-bold rounded-3xl bg-gradient-to-br from-purple-600 to-fuchsia-600 shadow-2xl active:scale-95 transition z-20"
-          >
-            Groom
-          </button>
-          <button
-            type="button" // <-- explicitly added
-            onClick={() => handleTap("bride")}
-            className="flex-1 py-8 text-2xl font-bold rounded-3xl bg-gradient-to-br from-pink-500 to-fuchsia-600 shadow-2xl active:scale-95 transition z-20"
-          >
-            Bride
-          </button>
+          <TapButton type="groom" onTap={handleTap} />
+          <TapButton type="bride" onTap={handleTap} />
         </div>
       )}
 
