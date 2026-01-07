@@ -9,11 +9,10 @@ terraform {
 }
 
 locals {
-  s3_origin_id         = "S3 Bucket"
-  s3_404_origin_id     = "S3 Website Endpoint for 404"
-  s3_origin_group_id   = "S3 Origin Group"
-  backend_origin_id    = "Backend"
-  google_tag_origin_id = "Google Tag Origin ${var.google_tag_id}"
+  s3_origin_id       = "S3 Bucket"
+  s3_404_origin_id   = "S3 Website Endpoint for 404"
+  s3_origin_group_id = "S3 Origin Group"
+  backend_origin_id  = "Backend"
 }
 
 data "aws_cloudfront_cache_policy" "optimized" {
@@ -72,18 +71,6 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
   }
 
-  origin {
-    domain_name = "${var.google_tag_id}.fps.goog"
-    origin_id   = local.google_tag_origin_id
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "https-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
-  }
-
   origin_group {
     origin_id = local.s3_origin_group_id
     failover_criteria {
@@ -134,22 +121,6 @@ resource "aws_cloudfront_distribution" "cdn" {
       function_arn = aws_cloudfront_function.add_html_extension.arn
     }
 
-  }
-
-  # Google Tag Gateway
-  ordered_cache_behavior {
-    path_pattern           = var.gt_gateway_pattern
-    allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
-    cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    compress               = true
-    target_origin_id       = local.google_tag_origin_id
-    viewer_protocol_policy = "redirect-to-https"
-
-    # Forward all request headers to the origin
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
-
-    # Don't cache anything
-    cache_policy_id = data.aws_cloudfront_cache_policy.disabled.id
   }
 
   # For backend: don't cache anything

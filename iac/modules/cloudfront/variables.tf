@@ -22,13 +22,3 @@ variable "backend_path_pattern" {
   description = "Path pattern that determines which requests are routed to the backend, e.g. `/api/*`"
   type        = string
 }
-
-variable "google_tag_id" {
-  description = "The Google Tag ID e.g. GT-XXXXXXX."
-  type        = string
-}
-
-variable "gt_gateway_pattern" {
-  description = "The path pattern for requests that Cloudfront will route to the Google Tag Gateway, e.g. /abcd/*"
-  type        = string
-}

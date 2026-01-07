@@ -12,6 +12,12 @@ variable "cloudflare_zone_id" {
   description = "The Cloudflare zone ID where the DNS records will be created."
   type        = string
 }
+
+variable "subdomain" {
+  description = "The subdomain that the game is hosted on"
+  type        = string
+}
+
 variable "allowed_account_ids" {
   description = "List of AWS account IDs allowed to apply this Terraform configuration."
   type        = list(string)
@@ -31,11 +37,6 @@ variable "env" {
   }
 }
 
-variable "neon_project_id" {
-  description = "The Neon project ID where the branch will be created in. Note: A branch in Neon refers to a separate database (which can contain many schemas)."
-  type        = string
-}
-
 variable "backend_port" {
   description = "The port on which the backend service will listen."
   type        = number
@@ -48,15 +49,5 @@ variable "api_path_pattern" {
 
 variable "backend_health_check_path" {
   description = "The path to the backend health check endpoint."
-  type        = string
-}
-
-variable "google_tag_id" {
-  description = "The Google Tag ID e.g. GT-XXXXXXX."
-  type        = string
-}
-
-variable "gt_gateway_pattern" {
-  description = "The path pattern for requests that Cloudfront will route to the Google Tag Gateway, e.g. /abcd/*"
   type        = string
 }
