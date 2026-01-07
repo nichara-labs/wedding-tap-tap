@@ -43,8 +43,3 @@ module "dns" {
   content = module.cloudfront.cloudfront_domain
   proxied = false
 }
-
-module "redirect_www" {
-  source  = "./modules/redirect_www"
-  zone_id = var.cloudflare_zone_id
-}

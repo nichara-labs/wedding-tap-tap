@@ -56,9 +56,7 @@ RUN --mount=type=cache,target=$UV_CACHE_DIR,uid=$CACHE_UID,gid=$CACHE_GID \
 # Set these variables later so that caches work
 ARG COMMIT_SHA=local
 ARG COMMIT_TIMESTAMP=0
-ARG APP_SETTINGS_B64
 ENV COMMIT_SHA=${COMMIT_SHA}
 ENV COMMIT_TIMESTAMP=${COMMIT_TIMESTAMP}
-ENV APP_SETTINGS_B64=${APP_SETTINGS_B64}
 
 CMD ["fastapi", "run"]
