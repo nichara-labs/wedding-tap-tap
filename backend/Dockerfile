@@ -47,9 +47,7 @@ FROM base AS deployment
 
 # Add the rest of the project source code and install it
 # Installing the project separately from its dependencies allows optimal layer caching
-COPY --chown=user:user pyproject.toml uv.lock main.py alembic.ini $APP_DIR/
-COPY --chown=user:user migrations/ $APP_DIR/migrations
-COPY --chown=user:user src/ $APP_DIR/src
+COPY --chown=user:user pyproject.toml uv.lock main.py $APP_DIR/
 RUN --mount=type=cache,target=$UV_CACHE_DIR,uid=$CACHE_UID,gid=$CACHE_GID \
     uv sync --frozen --no-dev
 
