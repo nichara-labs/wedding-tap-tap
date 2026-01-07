@@ -1,7 +1,6 @@
 locals {
-  project_name_underscore = replace(var.project_name, "-", "_")
-  cloudfront_cert_region  = "us-east-1" # Cloudfront requires ACM certificates to be created here
-  site_fqdn               = "${var.subdomain}.${data.cloudflare_zone.zone.name}"
+  cloudfront_cert_region = "us-east-1" # Cloudfront requires ACM certificates to be created here
+  site_fqdn              = "${var.subdomain}.${data.cloudflare_zone.zone.name}"
 }
 
 module "certificates" {
@@ -24,7 +23,6 @@ module "app_runner" {
   managed_policies  = ["arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"]
   inline_policies   = {}
   port              = var.backend_port
-  depends_on        = [module.ssm_parameters]
 
 }
 

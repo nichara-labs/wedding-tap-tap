@@ -28,7 +28,6 @@ in
       s3_state_bucket="$(gh variable get "''${env^^}"_S3_STATE_BUCKET)"
       tofu_args=(
         -var "s3_state_bucket=''${s3_state_bucket}"
-        -var-file="env-''${env}.tfvars"
       )
 
       tofu init -reconfigure "''${tofu_args[@]}"
