@@ -131,7 +131,7 @@ jobs:
           tofu apply \
             -auto-approve \
             -target 'module.ecr'
-          tofu output -json -var-file="env-${{ github.ref_name }}.tfvars" | \
+          tofu output -json | \
             jq -r 'to_entries[] | "\(.key)=\(.value.value|tostring)"' >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
@@ -186,7 +186,7 @@ jobs:
         working-directory: iac/
         run: |
           tofu apply -auto-approve
-          tofu output -json -var-file="env-${{ github.ref_name }}.tfvars" | \
+          tofu output -json | \
             jq -r 'to_entries[] | "\(.key)=\(.value.value|tostring)"' >> "$GITHUB_OUTPUT"
 
       - name: Trigger App Runner Deployment
