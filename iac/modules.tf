@@ -38,7 +38,7 @@ module "cloudfront" {
 module "dns" {
   source  = "./modules/dns"
   zone_id = var.cloudflare_zone_id
-  name    = var.env == "prod" ? "" : var.env
+  name    = var.subdomain
   type    = "CNAME"
   content = module.cloudfront.cloudfront_domain
   proxied = false

@@ -28,15 +28,6 @@ variable "region" {
   type        = string
 }
 
-variable "env" {
-  description = "Name of the deployment environment. Used for the name of the Neon branch as well as the subdomain (omitted for prod)."
-  type        = string
-  validation {
-    condition     = contains(["dev", "uat", "prod"], var.env)
-    error_message = "Invalid environment name"
-  }
-}
-
 variable "backend_port" {
   description = "The port on which the backend service will listen."
   type        = number
