@@ -19,7 +19,7 @@ const PowerBar = ({
       const value = Math.floor(200 - 120 * ratio); // 200 -> 80
       return `rgb(${value}, 0, ${value + 55})`;
     } else {
-      const value = Math.floor(255 - 120 * ratio); // 255 -> 135
+      const value = Math.floor(200 - 120 * ratio); // 255 -> 135
       return `rgb(255, ${value}, ${value})`;
     }
   };

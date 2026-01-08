@@ -50,7 +50,7 @@ export default function DashboardPage() {
       fetchWithTimeout(`${settings.api_base_url}/taps`, signal, 3000),
     refetchInterval: 500,
   });
-
+  const [hovered, setHovered] = useState(false);
   const threshold = settings.threshold;
   const maxCount = threshold * 2;
   const groomCount = data?.groom ?? 0;
@@ -106,17 +106,65 @@ export default function DashboardPage() {
       <div className="absolute inset-0 bg-black/35" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_60%)]" />
 
+      {/* dropdown visual */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2">
+        <div className="relative group flex flex-col items-center">
+          {/* arrow trigger */}
+          <div
+            className="
+      text-white/80
+      text-xl
+      cursor-default
+      select-none
+    "
+          >
+            ▼
+          </div>
+
+          {/* dropdown */}
+          <div
+            className="
+    mt-60
+    w-[480px]
+    rounded-xl
+    bg-black/70
+    p-4
+    flex flex-col items-center gap-3
+    opacity-0 scale-95
+    group-hover:opacity-100 group-hover:scale-100
+    transition-all duration-200
+    pointer-events-none
+    "
+          >
+            {/* qr */}
+            <div
+              className="
+          w-full aspect-square
+          bg-[url('/qr-code.png')]
+          bg-cover bg-center
+          rounded-md
+        "
+            />
+
+            {/* url */}
+            <div className="text-white text-xl tracking-wide">
+              game.chanelandnicholas.com
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="relative z-10 w-full flex justify-between px-16">
-        <PowerBar
-          count={groomCount}
-          baseColor="purple"
-          label="Groom"
-          maxCount={maxCount}
-        />
         <PowerBar
           count={brideCount}
           baseColor="pink"
           label="Bride"
+          maxCount={maxCount}
+        />
+        <PowerBar
+          count={groomCount}
+          baseColor="purple"
+          label="Groom"
           maxCount={maxCount}
         />
       </div>
