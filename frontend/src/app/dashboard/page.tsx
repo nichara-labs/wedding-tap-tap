@@ -136,7 +136,7 @@ export default function DashboardPage() {
       {showVideo && (
         <video
           ref={finalVideoRef}
-          src="https://microbin.nicholaslyz.com/file/fish-shark-crow"
+          src="https://microbin.nicholaslyz.com/file/mouse-horse-mole"
           autoPlay
           playsInline
           controls
