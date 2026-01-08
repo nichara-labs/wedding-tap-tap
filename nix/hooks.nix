@@ -74,13 +74,6 @@
         // {
           after = [ "uv-sync" ];
         };
-      generate-settings-schema = mkBackendPython "${uv} run scripts/schema.py schema.json";
-      validate-settings = {
-        enable = true;
-        entry = "${check-jsonschema} --schemafile backend/schema.json";
-        files = "\\.env\\.ya?ml$";
-        after = [ "generate-settings-schema" ];
-      };
 
       # Frontend
       pnpm-install = {
@@ -88,13 +81,6 @@
         entry = mkBash ''cd frontend && ${pnpm} install --frozen-lockfile'';
         pass_filenames = false;
         files = "^frontend/(package.json|pnpm-lock.yaml)$";
-      };
-      regenerate-ts-schema = {
-        enable = true;
-        entry = "scripts/openapi.sh";
-        after = [ "generate-settings-schema" ];
-        pass_filenames = false;
-        files = backend-python;
       };
       biome = {
         enable = true;
